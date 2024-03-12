@@ -12,6 +12,9 @@
 - Cosmoem
 - Solgaleo
 - Lunala
+- Sewaddle
+- Swadloon
+- Leavanny
 
 # Changes to Pokemon & Abilities
 
@@ -25,6 +28,11 @@
 - Revert Happiny PP buff from 4.7
 - Nerf Outrage (Axew): ~~200/300/400%~~ 100/150/200% ATK of special damage
 - Updated Sky Attack (Lugia): Skydiving now deals damage to the destination target instead of the initial target before, and after one second instead of immediately before
+- Pinsir is now Wild/Bug
+- Buff Woobat line: PP ~~90~~ 80
+- Nerf Dreepy line: PP ~~80~~ 100
+- Buff Starmie: Def ~~2~~ 4
+- Petal Dance (Budew) now always target the closest enemies instead of scanning board from top left corner
 
 # Changes to Synergies
 

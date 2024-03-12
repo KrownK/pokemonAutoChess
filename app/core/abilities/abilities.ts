@@ -1645,32 +1645,39 @@ export class PetalDanceStrategy extends AbilityStrategy {
   ) {
     super.process(pokemon, state, board, target, crit, true)
 
-    let damage = 0
-    let count = 0
+    const damage = [20, 30, 50][pokemon.stars - 1] ?? 50
+    const count = [3, 4, 5][pokemon.stars - 1] ?? 5
 
-    switch (pokemon.stars) {
-      case 1:
-        damage = 20
-        count = 3
-        break
-      case 2:
-        damage = 30
-        count = 4
-        break
-      case 3:
-        damage = 50
-        count = 5
-        break
-      default:
-        break
-    }
+    const enemies = board.cells.filter(
+      (p) => p && p.team !== pokemon.team
+    ) as PokemonEntity[]
+    const enemiesHit = enemies
+      .sort(
+        (a, b) =>
+          distanceM(
+            a.positionX,
+            a.positionY,
+            pokemon.positionX,
+            pokemon.positionY
+          ) -
+          distanceM(
+            b.positionX,
+            b.positionY,
+            pokemon.positionX,
+            pokemon.positionY
+          )
+      )
+      .slice(0, count)
 
-    board.forEach((x: number, y: number, tg: PokemonEntity | undefined) => {
-      if (tg && pokemon.team != tg.team && count > 0) {
-        tg.handleSpecialDamage(damage, board, AttackType.SPECIAL, pokemon, crit)
-        count--
-        tg.count.petalDanceCount++
-      }
+    enemiesHit.forEach((enemy) => {
+      enemy.handleSpecialDamage(
+        damage,
+        board,
+        AttackType.SPECIAL,
+        pokemon,
+        crit
+      )
+      enemy.count.petalDanceCount++
     })
   }
 }
@@ -7662,6 +7669,46 @@ export class MoongeistBeamStrategy extends AbilityStrategy {
   }
 }
 
+export class MantisBladesStrategy extends AbilityStrategy {
+  process(
+    pokemon: PokemonEntity,
+    state: PokemonState,
+    board: Board,
+    target: PokemonEntity,
+    crit: boolean
+  ) {
+    super.process(pokemon, state, board, target, crit)
+    const damage = pokemon.stars === 1 ? 30 : pokemon.stars === 2 ? 60 : 120
+
+    target.handleSpecialDamage(
+      damage,
+      board,
+      AttackType.PHYSICAL,
+      pokemon,
+      crit,
+      true
+    )
+
+    target.handleSpecialDamage(
+      damage,
+      board,
+      AttackType.SPECIAL,
+      pokemon,
+      crit,
+      true
+    )
+
+    target.handleSpecialDamage(
+      damage,
+      board,
+      AttackType.TRUE,
+      pokemon,
+      crit,
+      true
+    )
+  }
+}
+
 export * from "./hidden-power"
 
 export const AbilityStrategies: { [key in Ability]: AbilityStrategy } = {
@@ -7956,5 +8003,6 @@ export const AbilityStrategies: { [key in Ability]: AbilityStrategy } = {
   [Ability.ACCELEROCK]: new AccelerockStrategy(),
   [Ability.PETAL_BLIZZARD]: new PetalBlizzardStrategy(),
   [Ability.SUNSTEEL_STRIKE]: new SunsteelStrikeStrategy(),
-  [Ability.MOONGEIST_BEAM]: new MoongeistBeamStrategy()
+  [Ability.MOONGEIST_BEAM]: new MoongeistBeamStrategy(),
+  [Ability.MANTIS_BLADES]: new MantisBladesStrategy()
 }
